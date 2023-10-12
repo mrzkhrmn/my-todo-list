@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { TodoItem } from "./components/TodoItem";
+import { Form } from "./components/Form";
+import { Header } from "./components/Header";
 
 function App() {
+  const [todoList, setTodoList] = useState([]);
+
+  function handleAdd(newTodo) {
+    setTodoList([...todoList, newTodo]);
+  }
+
+  function handleDelete(id) {
+    setTodoList(todoList.filter((todo) => todo.id !== id));
+  }
+
+  function handleToggle(id) {
+    setTodoList(
+      todoList.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo
+      )
+    );
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main id="todo-list" className="todo-list">
+      <Header />
+      {todoList.length !== 0 ? (
+        <ul>
+          {todoList.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              onDelete={handleDelete}
+              onDone={handleToggle}
+              setTodoList={setTodoList}
+            />
+          ))}
+        </ul>
+      ) : (
+        <p>You dont have anything to do right now.</p>
+      )}
+      <Form handleAdd={handleAdd} />
+    </main>
   );
 }
 
